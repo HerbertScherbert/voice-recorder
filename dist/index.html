@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>CV_Leave a voice mail</title>
+    
+
+  </head>
+    
+  <body>
+  <!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voice Recorder Activity</title>
+  <meta name="referrer" content="no-referrer" />
+
+  <style>
+    /* --------------------- Design Tokens --------------------- */
+    :root {
+      --bg: rgba(255, 255, 255, .10);
+      /* page background: transparent so slide artwork shows */
+      --panel: #ffffff;
+      /* card surface */
+      --text: #2A2A2A;
+      /* body text */
+      --muted: #6B6F73;
+      /* secondary text */
+      --border: #CFCFCF;
+      /* inner outlines */
+      --hard-border: #2B2F33;
+      /* card outline (darker) */
+      --pill-bg: #7B8F9D;
+      /* format pill */
+      --pill-ink: #ffffff;
+      --btn-start: #35A185;
+      --btn-stop: #E85752;
+      --btn-gray: #E6E6E6;
+      --btn-gray-ink: #6B6F73;
+      --radius-lg: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 8px 24px rgba(0, 0, 0, .14);
+      /* subtle, like the example */
+      --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    /* --------------------- Base --------------------- */
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      /* transparent iframe backdrop */
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.45;
+      /* Center the widget in the iframe (both axes) */
+      display: grid;
+      place-items: center;
+      /* Small breathing room so the card never touches the edges */
+      padding: clamp(12px, 2vw, 28px);
+    }
+
+    /* --------------------- Centered Card --------------------- */
+    .card {
+      width: min(860px, 96vw);
+      /* like your comp; scales on small frames */
+      background: var(--panel);
+      border: 1px solid var(--hard-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .content {
+      padding: clamp(16px, 2vw, 28px);
+    }
+
+    /* Header row */
+    .header {
+      display: flex;
+      align-items: start;
+      gap: 14px;
+    }
+
+    /* Responsive type (your clamp rules) */
+    h1 {
+      font-size: clamp(18px, 1.6vw, 28px);
+      letter-spacing: .3px;
+      text-transform: uppercase;
+      margin: 0 0 6px 0;
+    }
+
+    .lead,
+    .tips {
+      font-size: clamp(14px, 1.1vw, 16px);
+    }
+
+    .lead {
+      color: var(--muted);
+      margin: 0;
+      max-width: 64ch;
+    }
+
+    .mic {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      display: grid;
+      place-items: center;
+      color: #2B2F33;
+      margin-top: 2px;
+    }
+
+    .pill {
+      margin-left: auto;
+      align-self: start;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--pill-bg);
+      color: var(--pill-ink);
+      font-size: .95rem;
+      white-space: nowrap;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0 12px;
+    }
+
+    button {
+      appearance: none;
+      border: 2px solid transparent;
+      border-radius: var(--radius-sm);
+      /* your responsive sizes */
+      font-size: clamp(13px, 1.1vw, 16px);
+      padding: clamp(8px, 0.9vw, 12px) clamp(12px, 1.3vw, 18px);
+      font-weight: 700;
+      letter-spacing: .3px;
+      cursor: pointer;
+      transition: transform .02s ease, filter .15s ease, opacity .15s ease;
+    }
+
+    button:active {
+      transform: translateY(1px)
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed
+    }
+
+    .btn-start {
+      background: var(--btn-start);
+      color: #fff;
+    }
+
+    .btn-start:hover {
+      filter: brightness(1.05)
+    }
+
+    .btn-stop {
+      background: var(--btn-stop);
+      color: #fff;
+    }
+
+    .btn-stop:hover {
+      filter: brightness(1.05)
+    }
+
+    .btn-gray {
+      background: var(--btn-gray);
+      color: var(--btn-gray-ink);
+      border-color: #D3D3D3;
+    }
+
+    .btn-gray:hover {
+      filter: brightness(0.98)
+    }
+
+    /* Player tray */
+    .player-wrap {
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 12px;
+      overflow: hidden;
+      background: #fff;
+      /* keep solid for player legibility */
+    }
+
+    /* responsive height for the native player */
+    audio {
+      width: 100%;
+      height: clamp(28px, 2.2vw, 36px);
+      display: block;
+    }
+
+    .tips {
+      color: var(--muted);
+      margin: 12px 2px 2px;
+    }
+
+    .hidden {
+      display: none
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <article class="card" role="region" aria-labelledby="title">
+    <div class="content">
+      <div class="header">
+        <div class="mic" aria-hidden="true">🎙️</div>
+        <div>
+          <!-- Edit this title to control the download filename base -->
+          <h1 id="title">RECORD YOUR MESSAGE FOR sylvia</h1>
+          <p class="lead">
+            Click <strong>Start</strong> to grant microphone access and begin recording.
+            Download your recording to review with your People Development Partner at your next
+            facilitated session.
+          </p>
+        </div>
+        <div id="fmt" class="pill" title="Recording format">format: audio</div>
+      </div>
+
+      <div class="controls" role="group" aria-label="Recording controls">
+        <button id="btnStart" class="btn-start" aria-pressed="false">START</button>
+        <button id="btnStop" class="btn-stop" disabled>STOP</button>
+        <button id="btnReset" class="btn-gray" disabled>RESET</button>
+        <button id="btnDownload" class="btn-gray" disabled>DOWNLOAD</button>
+      </div>
+
+      <div class="player-wrap">
+        <audio id="player" class="hidden" controls aria-label="Playback of your recording"></audio>
+      </div>
+
+      <p class="tips">
+        Tips: Use a headset to reduce echo. Downloads may open in a new tab on mobile—save from the browser menu.
+      </p>
+
+      <div id="status" class="sr-only" aria-live="polite">Idle</div>
+    </div>
+  </article>
+
+  <script>
+    /* -----------------------------------------------------------
+       Recorder config: prefer WebM/Opus; WAV fallback if needed.
+       This file names downloads based on the <h1 id="title"> text.
+       Example: "Record your message for the Bonifaces (3).webm"
+       ----------------------------------------------------------- */
+    const FORCE_WAV_RECORDING = false; // set true to force WAV fallback
+    // Try WebM/Opus first (cross-browser safe in modern Chrome/Firefox/Safari)
+    const preferredType = (() => {
+      const list = ['audio/webm;codecs=opus', 'audio/webm'];
+      for (const t of list) {
+        if (window.MediaRecorder && MediaRecorder.isTypeSupported(t)) return t;
+      }
+      return ''; // no support -> WAV path
+    })();
+    // Elements
+    const btnStart = document.getElementById('btnStart');
+    const btnStop = document.getElementById('btnStop');
+    const btnReset = document.getElementById('btnReset');
+    const btnDownload = document.getElementById('btnDownload');
+    const player = document.getElementById('player');
+    const statusEl = document.getElementById('status');
+    const fmtEl = document.getElementById('fmt');
+    const titleEl = document.getElementById('title');
+    // State
+    let mediaStream = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let recordedBlob = null;
+    let usingWav = false;
+    // WAV fallback vars
+    let audioCtx, sourceNode, processorNode, wavBuffers = [],
+      wavSampleRate = 44100;
+    // ---------- UI helpers ----------
+    function setStatus(msg) {
+      statusEl.textContent = msg;
+    }
+
+    function uiState({
+      recording,
+      hasData
+    }) {
+      btnStart.disabled = recording;
+      btnStop.disabled = !recording;
+      btnReset.disabled = !hasData && !recording;
+      btnDownload.disabled = !hasData;
+      btnStart.setAttribute('aria-pressed', String(recording));
+      player.classList.toggle('hidden', !hasData);
+    }
+    // Build safe filename from title + incremental counter
+    function sanitizeForFilename(text) {
+      return text
+        .replace(/\s+/g, ' ')
+        .replace(/[^A-Za-z0-9 _-]/g, '')
+        .trim();
+    }
+
+    function nextIndexFor(title) {
+      const key = 'vr_idx_' + title.toLowerCase();
+      const n = parseInt(localStorage.getItem(key) || '1', 10);
+      localStorage.setItem(key, String(n + 1));
+      return n;
+    }
+
+    function buildFilename(ext) {
+      const raw = titleEl?.innerText || document.title || 'Recording';
+      const base = sanitizeForFilename(raw);
+      const idx = nextIndexFor(base);
+      return `${base} (${idx}).${ext}`;
+    }
+    // ---------- WAV encoding (fallback) ----------
+    function floatTo16BitPCM(float32Array) {
+      const buffer = new ArrayBuffer(float32Array.length * 2);
+      const view = new DataView(buffer);
+      let offset = 0;
+      for (let i = 0; i < float32Array.length; i++, offset += 2) {
+        let s = Math.max(-1, Math.min(1, float32Array[i]));
+        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+      }
+      return view;
+    }
+
+    function encodeWav(buffers, sampleRate) {
+      const length = buffers.reduce((acc, b) => acc + b.length, 0);
+      const merged = new Float32Array(length);
+      let off = 0;
+      for (const b of buffers) {
+        merged.set(b, off);
+        off += b.length;
+      }
+      const pcmView = floatTo16BitPCM(merged);
+      const header = new ArrayBuffer(44);
+      const dv = new DataView(header);
+      const wr = (v, o, s) => {
+        for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i));
+      }
+      wr(dv, 0, 'RIFF');
+      dv.setUint32(4, 36 + pcmView.byteLength, true);
+      wr(dv, 8, 'WAVE');
+      wr(dv, 12, 'fmt ');
+      dv.setUint32(16, 16, true);
+      dv.setUint16(20, 1, true);
+      dv.setUint16(22, 1, true);
+      dv.setUint32(24, sampleRate, true);
+      dv.setUint32(28, sampleRate * 2, true);
+      dv.setUint16(32, 2, true);
+      dv.setUint16(34, 16, true);
+      wr(dv, 36, 'data');
+      dv.setUint32(40, pcmView.byteLength, true);
+      return new Blob([dv, new Uint8Array(pcmView.buffer)], {
+        type: 'audio/wav'
+      });
+    }
+    // ---------- Recording paths ----------
+    async function startRecording() {
+      uiState({
+        recording: true,
+        hasData: !!recordedBlob
+      });
+      setStatus('Requesting microphone…');
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          audio: true
+        });
+      } catch (e) {
+        console.error(e);
+        setStatus('Microphone permission denied or unavailable.');
+        uiState({
+          recording: false,
+          hasData: !!recordedBlob
+        });
+        return;
+      }
+      if (!FORCE_WAV_RECORDING && preferredType) {
+        // MediaRecorder: WebM/Opus
+        usingWav = false;
+        fmtEl.textContent = `format: ${preferredType}`;
+        setStatus('Recording…');
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(mediaStream, {
+          mimeType: preferredType
+        });
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+        };
+        mediaRecorder.onstop = () => {
+          recordedBlob = new Blob(recordedChunks, {
+            type: preferredType
+          });
+          player.src = URL.createObjectURL(recordedBlob);
+          setStatus('Ready. You can play or download.');
+          uiState({
+            recording: false,
+            hasData: true
+          });
+        };
+        mediaRecorder.start();
+        return;
+      }
+      // WAV fallback
+      usingWav = true;
+      fmtEl.textContent = 'format: audio/wav';
+      setStatus('Recording…');
+      wavBuffers = [];
+      audioCtx = new(window.AudioContext || window.webkitAudioContext)({
+        sampleRate: wavSampleRate
+      });
+      sourceNode = audioCtx.createMediaStreamSource(mediaStream);
+      const bufferSize = 4096;
+      processorNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+      processorNode.onaudioprocess = (e) => {
+        const input = e.inputBuffer.getChannelData(0);
+        wavBuffers.push(new Float32Array(input));
+      };
+      sourceNode.connect(processorNode);
+      processorNode.connect(audioCtx.destination);
+    }
+
+    function stopRecording() {
+      // Stop MediaRecorder path
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      // WAV path finalize
+      if (usingWav && audioCtx) {
+        if (processorNode) processorNode.disconnect();
+        if (sourceNode) sourceNode.disconnect();
+        if (audioCtx && typeof audioCtx.close === 'function') audioCtx.close();
+        recordedBlob = encodeWav(wavBuffers, wavSampleRate);
+        player.src = URL.createObjectURL(recordedBlob);
+        setStatus('Ready. You can play or download.');
+        uiState({
+          recording: false,
+          hasData: true
+        });
+      }
+      // Always stop tracks
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(t => t.stop());
+        mediaStream = null;
+      }
+    }
+
+    function resetRecording() {
+      recordedBlob = null;
+      recordedChunks = [];
+      usingWav = false;
+      player.src = '';
+      setStatus('Idle');
+      uiState({
+        recording: false,
+        hasData: false
+      });
+    }
+    // Name-specific download: use title + incremental index + correct extension
+    function download() {
+      if (!recordedBlob) return;
+      const isWebm = recordedBlob.type && recordedBlob.type.includes('webm');
+      const isWav = recordedBlob.type && recordedBlob.type.includes('wav');
+      // Prefer .webm; if WAV fallback was used, use .wav
+      const ext = isWav ? 'wav' : 'webm';
+      const filename = buildFilename(ext);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(recordedBlob);
+      a.download = filename; // friendly name
+      a.target = '_blank'; // better behavior in iframes/iOS
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        URL.revokeObjectURL(a.href);
+        a.remove();
+      }, 1000);
+    }
+    // Wire up
+    btnStart.addEventListener('click', startRecording);
+    btnStop.addEventListener('click', stopRecording);
+    btnReset.addEventListener('click', resetRecording);
+    btnDownload.addEventListener('click', download);
+    uiState({
+      recording: false,
+      hasData: false
+    });
+  </script>
+</body>
+
+</html>
+    
+  </body>
+  
+</html>
